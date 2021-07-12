@@ -1,0 +1,309 @@
+Importing pandas as pd 
+Importing matplotlib as plt 
+Importing pathlib from Path
+Importing math 
+
+Importing string 
+Importing spacy 
+Importing displacy from spacy 
+Importing STOP_WORDS from spacy.lang.en.stop_words
+Importing word_tokenize from nltk.tokenize
+Importing STOPWORDS from gensim.parsing.preprocessing
+Importing nltk 
+From nltk downlaod 'stopwords' 
+
+
+Importing numpy as np 
+Importing TfidfVectorizer and CountVectorizer from sklearn.feature_extraction.text 
+Importing cosine_similarity from sklearn.metrics.pairwise
+
+SET file1 to "Chapter1.txt"
+SET file2 to "Chapter2.txt"
+SET file3 to "Chapter3.txt"
+SET file4 to "Chapter4.txt"
+SET file5 to "chapter4.txt"
+
+SET file_lst to [file1, file2, file3, file4, file5]
+
+Procedure allChapter_combiner:
+          Open 'AllChapters.txt' write with encoding 'utf8' as outfile:
+                     For fname in file_lst: 
+                               Open fname with encoding 'utf8' as infile:
+                                       For line in infile:
+                                            write line in outfile
+         Open 'AllChapters.txt' read with encoding 'utf8' as allfltxt:
+                     Output read allfltxt 
+
+SET all_chap_lines to call allChapter_combiner 
+
+Procedure DataReader(f1):
+          Open f1 read with encoding 'utf8' as finalfl:
+                        SET tem to read finalfl 
+                        SET lines to temp 
+          Output lines 
+
+SET f1 ot DataReader(file1)
+SET f2 to DataReader(file2)
+SET f3 to DataReader(file3)
+SET f4 to DataReader(file4)
+SET f5 to DataReader(file5)
+
+SET nlp to spacy.load('en_core_web_sm')
+SET stopwords to STOPWORDS
+SET pun to string.punctuation 
+
+Procedure text_cleaner(contents):
+           SET Global fnl_filtered_lst,tokens_sw,lower_tokens, numbers, num, pun, punctuation, text_tokens, lines, texts, temp2, temp4, txt_pun
+           SET text_tokens to word_tokenize(contents)
+           SET lower_tokens ot [ ] 
+           For text in text_tokens:
+                   SET temp2 to text.lower()
+                   ADD temp2 to lower_tokens
+           SET punctuation to [ ] 
+           For i in pun: 
+                   ADD i to punctuation 
+           SET numbers to [ 0 to 101 ] 
+           Call pun_append
+           SET num to [ ] 
+           For j in numbers:
+                   SET temp3 to str(j) 
+                   ADD temp3 to num 
+           SET tokens_sw ot [ ] 
+           For word in lower_tokens: 
+                    If word not in stopwords: 
+                               ADD text to filtered_lst 
+           SET txt_pun = [ ]
+           For c in filtered_lst: 
+                    If c not in punctuation:
+                             ADD c to txt_pun 
+           Output txt_pun 
+
+Procedure pun_append: 
+            ADD " ' " to punctuation 
+            ADD " ’ " to punctuation
+            ADD " “ " to punctuation
+            ADD " ” " to punctuation
+            ADD " ... " to punctuation 
+            ADD " - " to punctuation 
+            ADD " ___ " to punctuation 
+            ADD " __" to punctuation 
+            ADD " - " to punctuation 
+            ADD " — " to punctuation 
+
+Procedure txt_data_clean(sentence): 
+           SET doc to nlp(sentence) 
+         
+           SET tokens to [ ] 
+           
+           For token in doc: 
+                     If token.lemma_ not in "-PRON-":
+                             SET temp to token.lemma_.lower().strip()
+                     Else: 
+                             SET temp to token.lower_
+                     ADD temp to tokens 
+          
+           SET clean_tok to [ ] 
+  
+           For token in tokens: 
+                     If token not in stopwords and token not in punctuation: 
+                                 ADD token to cdan_tok 
+          Output clean_tok 
+
+Procedure final_cleaner(lst): 
+          SET fnl_filtered_lst to [ ]
+          For y in lst: 
+                  SET temp8 to txt_data_clean(y)
+                  For q in temp8: 
+                          ADD q to fnl_diltered_lst 
+          Output fnl_filtered_lst
+
+SET clntxt1 to text_cleaner(f1)
+call pun_append()
+SET document1 to call final_cleaner(clntxt1)
+
+SET clntxt2 to text_cleaner(f2) 
+SET document1 to call final_cleaner(clntxt2)
+
+SET clntxt3 to text_cleaner(f3)
+SET document3 to call final_cleaner(clntxt3) 
+
+SET clntxt4 to text_cleaner(f4) 
+SET document4 to call final_cleaner(clntxt4) 
+
+SET clntxt5 to text_cleaner(f5) 
+SET document5 to call final_cleaner(clntxt5) 
+
+SET AllDocumentsList to [document1, document2, document3, document4, document5]
+
+SET uniqueWords to set().union(all items AllDocumentsList) 
+
+SET numOfWords1 to dict.fromkeys(uniquewords, 0) 
+For word in document1: 
+         numOfWords[word] += 1 
+
+SET numOfWords2 to dict.fromkeys(uniquewords, 0) 
+For word in document2: 
+         numOfWords[word] += 1
+
+SET numOfWords3 to dict.fromkeys(uniquewords, 0) 
+For word in document3: 
+        numOfWords[word] += 1 
+
+SET numOfWords4 to dict.formkeys(uniquewords, 0) 
+For word in document4:
+        numOfWords[word] += 1 
+
+SET numOfWords5 to dict.formkeys(uniquewords, 0)
+For word in document5: 
+        numOfWords[word] += 1 
+
+
+SET num_of_wrd_lst to [numOfWords1,numOfWords2,numOfWords3,numOfWords4,numOfWords5]
+For var in num_of_wrd_lst: 
+          DISPLAY  (pd.DataFrame(var.items(), SET columns to ['terms','frequency'])
+
+
+Procedure TF_calc(word_dict, document):
+           SET  tf_Dict to { } 
+           SET document_count to length of document 
+           For word, count in word_dict.items(): 
+                       SET tf_dict[word] to DIVIDE float(document_count) by count 
+           Output tf_Dict 
+
+SET tf1 to call TF_calc(numOfWords1, document1) 
+SET tf2 to call TF_calc(numOfWords2, document2) 
+SET tf3 to call TF_calc(numOfWords3, document3) 
+SET tf4 to call TF_calc(numOfWords4, document4) 
+SET tf5 to call TF_calc(numOfWords5, document5) 
+
+SET tfList to [tf1, tf2, tf3, tf4, tf5]
+For freq in tfList: 
+       SET tfdf to (pd.DataFrame(tf1.items(), SET columns to ['terms','term frequency'])
+       DISPLAY tfdf 
+
+Procedure IDF_calc(documents): 
+              SET n to length of documents
+      
+              SET idfDict to dict.fromkeys(documents[0].keys(), 0 ) 
+              For document in documents:
+                          For word, val in document.items(): 
+                                  If val greter than 0 : 
+                                            ADD 1 to idfDict[word] 
+             For word, val in idfDict.itmes(): 
+                           SET idfDict[word] to log of DIVIDE float(val) by n 
+
+             Output idfDict 
+
+SET idfs to IDF_calc([numOfWords1, numOfWords2, numOfWords3, numOfWords4, numOfWords4, numofWords5)]
+
+DISPLAY (pd.DataFrame(idfs.items(), SET columns to ['terms','IDF'])
+
+Proedure TFIDF_calc(tfBOW, idfs): 
+               SET tfidf to { } 
+               For word, val in tfBOW.items()
+                         SET tfidf[word] to Multiply val with idfs[words] 
+               Output tfidf
+SET tfidf1 to TFIDF_calc(tf1, idfs) 
+SET tfidf2 to TFIDF_calc(tf2, idfs) 
+SET tfidf3 to TFIDF_calc(tf3, idfs) 
+SET tfidf4 to TFIDF_calc(tf4, idfs) 
+SET tfidf5 to TFIDF_calc(tf5, idfs) 
+
+SET AllTfidfs to [tfidf1, tfidf2, tfidf3, tfidf4, tfidf5]
+
+For tfid in AllTfidfs: 
+        SET df to (pd.DataFrame(tfid.items(), SET columns to ['terms','TF_IDF'])
+        DISPLAY df 
+
+SET StrDoc1 to ' '.join(document1)
+SET StrDoc2 to ' '.join(document2)
+SET StrDoc3 to ' '.join(document3)
+SET StrDoc4 to ' '.join(document4)
+SET StrDoc5 to ' '.join(document5)
+
+SET strList to [StrDoc1,StrDoc2,StrDoc3,StrDoc4,StrDoc5]
+
+SET text_file1 to Open("txt/StrDoc1.txt","w") 
+SET strn1 to write StrDoc1 to text_file1
+CLOSE text_file1
+SET text_file2 to Open("txt/StrDoc2.txt","w") 
+SET strn2 to write StrDoc2 to text_file2
+CLOSE text_file2
+SET text_file3 to Open("txt/StrDoc3.txt","w") 
+SET strn3 to write StrDoc3 to text_file3
+CLOSE text_file3
+SET text_file4 to Open("txt/StrDoc4.txt","w") 
+SET strn4 to write StrDoc4 to text_file4
+CLOSE text_file4
+SET text_file5 to Open("txt/StrDoc5.txt","w") 
+SET strn5 to write StrDoc5 to text_file5
+CLOSE text_file5
+
+SET vectorizer to TfidfVectorizer()
+SET vectors to vectorizer.fit_transform([StrDoc1, StrDoc2, StrDoc3, StrDoc4, StrDoc5])
+SET feature_names to vectorizer.get_feature_names()
+SET dense to vectors.todense()
+SET dneselist to dense.tolist()
+SET df1 to pd.DataFrame(denselist, SET columns to feature_names)
+
+DISPLAY df1 
+
+Path goto "./txt" directory.mkdir(parents=True, exist_ok=Ture) 
+SET all_txt_files to [ ] 
+For file in path("txt").rglob("*.txt") 
+            ADD file.parent / file.name to all_txt_files
+
+SET n_files to length of all_txt_files 
+DISPLAY n_files 
+
+SORT all_txt_files 
+
+SET all_docs to [ ] 
+For txt_file in all_txt_files: 
+         Open txt_file as f : 
+                  SET txt_file_as_string to read f 
+          ADD txt_file_as_string to all_docs 
+
+SET vectorizer to TfidfVectorizer(SET max to 0.65, SET min_df to 1 , SET stop_words to None, SET use_idf as True, SET norm to None) 
+SET transformed_documents to vectorizer.fit_transform(all_docs) 
+
+SET transformed_documents_as_array to transformed_documents convert to array 
+DISPLAY length of transformed_documents_as_array 
+
+Path goto "./tf_idf_output" directory.mkdir(parents=True, exist_ok=Ture) 
+
+SET output_filenames to [ string of txt_file replace form '.txt' to '.csv' replace from 'txt/' to 'tf_idf_output/' For txt_file in all_txt_files] 
+
+For counter, doc in enumerate(transformed_documents_as_array):
+         SET tf_idf_tuples to list of zip vectorizer.get_feature_naems(), doc 
+         SET one_doc_as_df to pd.DataFrame.from_records(tf_idf_tuples,  SET columns ['term', 'rank']).sort_values(SET by to 'rank', SET ascending as False).reset_index(SET drop as True) 
+         DISPLAY one_doc_as_df 
+
+SET count_vectorizer to CountVectorizer() 
+SET vector_matrix_cosin  to count_vectorizer.fitre_names() 
+
+SET matrix_cosin_vector to vector_matrix_cosin convert to array 
+
+Procedure dataFramer(matirx, tokens): 
+              SET DocName to [format'doc_{i+1}' For i, _ in enumerate(matrix)]
+              SET dataframe to pd.DataFrame(SET data to matrix, SET index to DocName, SET columns to tokens) 
+              Output dataframe 
+
+DISPLAY call dataFramer(matrix_cosin_vector, tokens) 
+
+SET cosin_similarity_matrix to cosine_similarity(matrix_cosin_vector) 
+
+SET docList to ['doc_1','doc_2','doc_3','doc_4','doc_5'] 
+Call dataFramer(cosine_similarity_matrix, docList) 
+
+
+
+
+
+
+
+ 
+
+            
+
+
